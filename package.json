@@ -1,0 +1,28 @@
+{
+  "name": "node-paddle-shifter",
+  "version": "0.0.1",
+  "description": "node js paddle shifter for CSUN FSAE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaybeRex/PaddleShift.git"
+  },
+  "keywords": [
+    "nodejs",
+    "node",
+    "js",
+    "paddle",
+    "shifter",
+    "CSUN",
+    "FSAE"
+  ],
+  "author": "Mario Solorzano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MaybeRex/PaddleShift/issues"
+  },
+  "homepage": "https://github.com/MaybeRex/PaddleShift#readme"
+}
