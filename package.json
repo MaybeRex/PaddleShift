@@ -27,6 +27,7 @@
   "homepage": "https://github.com/MaybeRex/PaddleShift#readme",
   "dependencies": {
     "node-error-classes": "^2.0.1",
-    "phidgetapi": "^2.3.0"
+    "phidgetapi": "^2.3.0",
+    "ws": "^1.0.1"
   }
 }

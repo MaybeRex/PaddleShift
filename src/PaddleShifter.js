@@ -46,6 +46,7 @@ function shiftUp(callback, upRelay){
         throw err;
     }
     upRelay = 1;
+
     setTimeout(
         shift(upRelay, 0),
         TIMEOUT
@@ -54,7 +55,6 @@ function shiftUp(callback, upRelay){
         callback(),
         TIMEOUT*2
     );
-    callback();
 }
 
 /**
