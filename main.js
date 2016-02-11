@@ -9,14 +9,14 @@ let shifting = false;
 const relays = new InterfaceKit;
 relays.connect(
     {
-        serial: '00000'
+        serial: config.relaySerial
     }
 );
 
 const IK888 = new InterfaceKit;
 IK888.connect(
     {
-        serial: '0000000'
+        serial: config.IK888Serial
     }
 );
 
