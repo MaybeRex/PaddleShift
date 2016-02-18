@@ -57,59 +57,21 @@ function paddleListener(changes){
         && IK888.inputs[config.OVERRIDE] === 0
         && shifting == false
     ){
-        IK888.outputs[7] = 0;
-        shifting = true;
-        relays.outputs[config.UP] = 1;
-        setTimeout(
-            shiftUp.bind(this, 0),
-            config.timeout
-        );
-        setTimeout(
-            clearShift,
-            config.timeout*2
-        );
+        shiftUp();
     }
     if( IK888.inputs[config.UP] === 0
         && IK888.inputs[config.DOWN] === 1
         && IK888.inputs[config.OVERRIDE] === 0
         && shifting == false
     ){
-        IK888.outputs[7] = 0;
-        shifting = true;
-        relays.outputs[config.CLUTCH] = 1;
-        setTimeout(
-            shiftDown.bind(this, 1),
-            config.timeout
-        );
-        setTimeout(
-            shiftDown.bind(this, 0),
-            config.timeout*2
-        );
-        setTimeout(
-            shiftClutch.bind(this, 0),
-            config.timeout*3
-        );
-        setTimeout(
-            clearShift,
-            config.timeout*4
-        );
+        shiftDown();
     }
     if( IK888.inputs[config.UP] === 0
         && IK888.inputs[config.DOWN] === 1
         && IK888.inputs[config.OVERRIDE] === 1
         && shifting == false
     ){
-        IK888.outputs[7] = 0;
-        shifting = true;
-        relays.outputs[config.DOWN] = 1;
-        setTimeout(
-            shiftDown.bind(this, 0),
-            config.timeout
-        );
-        setTimeout(
-            clearShift,
-            config.timeout*2
-        );
+        eShiftDown();
     }
 
     if( IK888.inputs[config.OVERRIDE] === 1
@@ -125,6 +87,68 @@ function paddleListener(changes){
         relays.outputs[config.CLUTCH] = 0;
         clearShift();
     }
+}
+
+/**
+ * [eShiftDown description]
+ * @return {[type]} [description]
+ */
+function eShiftDown(){
+    IK888.outputs[7] = 0;
+    shifting = true;
+    relays.outputs[config.DOWN] = 1;
+    setTimeout(
+        shiftDownRelay.bind(this, 0),
+        config.timeout
+    );
+    setTimeout(
+        clearShift,
+        config.timeout*2
+    );
+}
+
+/**
+ * [shiftUp description]
+ * @return {[type]} [description]
+ */
+function shiftUp(){
+    IK888.outputs[7] = 0;
+    shifting = true;
+    relays.outputs[config.UP] = 1;
+    setTimeout(
+        shiftUpRelay.bind(this, 0),
+        config.timeout
+    );
+    setTimeout(
+        clearShift,
+        config.timeout*2
+    );
+}
+
+/**
+ * [shiftDown description]
+ * @return {[type]} [description]
+ */
+function shiftDown(){
+    IK888.outputs[7] = 0;
+    shifting = true;
+    relays.outputs[config.CLUTCH] = 1;
+    setTimeout(
+        shiftDownRelay.bind(this, 1),
+        config.timeout
+    );
+    setTimeout(
+        shiftDownRelay.bind(this, 0),
+        config.timeout*2
+    );
+    setTimeout(
+        shiftClutch.bind(this, 0),
+        config.timeout*3
+    );
+    setTimeout(
+        clearShift,
+        config.timeout*4
+    );
 }
 
 /**
@@ -146,20 +170,20 @@ function clearShift(){
 }
 
 /**
- * [shiftUp description]
+ * [shiftUpRelay description]
  * @param  {[type]} state [description]
  * @return {[type]}       [description]
  */
-function shiftUp(state){
+function shiftUpRelay(state){
     relays.outputs[config.UP] = state;
 }
 
 /**
- * [shiftDown description]
+ * [shiftDownRelay description]
  * @param  {[type]} state [description]
  * @return {[type]}       [description]
  */
-function shiftDown(state){
+function shiftDownRelay(state){
     relays.outputs[config.DOWN] = state;
 }
 
