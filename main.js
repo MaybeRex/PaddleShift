@@ -51,6 +51,7 @@ function initLED(){
  * @return {[type]}         [description]
  */
 function paddleListener(changes){
+
     if( IK888.inputs[config.UP] === 1
         && IK888.inputs[config.DOWN] === 0
         && IK888.inputs[config.OVERRIDE] === 0
@@ -93,8 +94,11 @@ function paddleListener(changes){
             config.timeout*4
         );
     }
-
-    if( IK888.inputs[config.OVERRIDE] === 1){
+    if( IK888.inputs[config.UP] === 0
+        && IK888.inputs[config.DOWN] === 1
+        && IK888.inputs[config.OVERRIDE] === 1
+        && shifting == false
+    ){
         IK888.outputs[7] = 0;
         shifting = true;
         relays.outputs[config.DOWN] = 1;
@@ -110,9 +114,16 @@ function paddleListener(changes){
 
     if( IK888.inputs[config.OVERRIDE] === 1
     ){
-        relays.outputs[config.OVERRIDE] = 1;
-    }else{
-        relays.outputs[config.OVERRIDE] = 0;
+        relays.outputs[config.CLUTCH] = 1;
+    }
+    if(
+        IK888.inputs[config.UP] === 0
+            && IK888.inputs[config.DOWN] === 0
+            && IK888.inputs[config.OVERRIDE] === 0
+            && shifting == false
+    ){
+        relays.outputs[config.CLUTCH] = 0;
+        clearShift();
     }
 }
 
