@@ -1,3 +1,8 @@
-#! /bin/bash
+#!/bin/bash
+#Filename: test.sh
 
-printf 'hello world!';
+init(){
+    echo "wtfff";
+}
+
+init
