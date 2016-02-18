@@ -94,10 +94,7 @@ function paddleListener(changes){
         );
     }
 
-    if( IK888.inputs[config.OVERRIDE] === 1
-        && IK888.inputs[config.DOWN] === 1
-        && IK888.inputs[config.UP] === 0
-    ){
+    if( IK888.inputs[config.OVERRIDE] === 1){
         IK888.outputs[7] = 0;
         shifting = true;
         relays.outputs[config.DOWN] = 1;
@@ -112,14 +109,10 @@ function paddleListener(changes){
     }
 
     if( IK888.inputs[config.OVERRIDE] === 1
-        && IK888.inputs[config.DOWN] === 0
-        && IK888.inputs[config.UP] === 0
     ){
-        relays.outputs[config.OVERRIDE] =1;
-    }
-    if( IK888.inputs[config.OVERRIDE] === 0
-    ){
-        relays.outputs[config.OVERRIDE] =0;
+        relays.outputs[config.OVERRIDE] = 1;
+    }else{
+        relays.outputs[config.OVERRIDE] = 0;
     }
 }
 
