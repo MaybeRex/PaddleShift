@@ -15,7 +15,7 @@
 DESC="PaddleShiftControls"
 
 start() {
-    forever start /root/git/ControlServer/VPUHardwareServer/api.js
+    forever start /root/git/PaddleShift/main.js
 }
 
 start
