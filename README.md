@@ -7,18 +7,18 @@ In this repository you will find all the code required to control the shifting l
 * **Downshift** - Clutch cylinder is actuated to pull the clutch in, shift cylinder is actuated to execute the shift, and clutch is let back out.
 * **E-clutch** - When the E-clutch is engaged, the shifter functions without automation.
 
-The system uses a Raspberry Pi 2 Model B running a Linux shell script to start the program on boot up. The high level code flow is as follows:
-1. The program connects and initializes both the I/O and relay board.
-2. It listens for inputs from the I/O board. Those inputs can be upshift, downshift, or E-clutch buttons.
-3. Depending on the input, the corresponding shifting function is called.
-4. The function tells the relay board to execute its respective shift function.
+The system uses a Raspberry Pi 2 Model B running a Linux shell script to start the program on boot up. The high level code flow is as follows:  
+1. The program connects to and initializes both the I/O and relay board.  
+2. It listens for inputs from the I/O board. Those inputs can be upshift, downshift, or E-clutch buttons.  
+3. Depending on the input, the corresponding shifting function is called.  
+4. The function tells the relay board to execute its respective shift function.  
 
 ***Note*** : Auto blipping was not a functionality on this car. The driver is relied upon to rev match during down shifting.
 ___
 
 ## Code Walkthrough
 
-This documentation will provide a line-by-line walkthrough of the code in this repository. We'll begin by taking a look at config.js:
+This documentation will provide a line-by-line walkthrough of the code in this repository. The code is written in javascript using the [node.js](https://nodejs.org/en/) runtime environment. We'll begin by taking a look at config.js (./configs/config.js):
 
 ```javascript
 'use strict';
@@ -50,3 +50,20 @@ This block of code is creating an object that will house all of the initial vari
 module.exports = shifterConfig;
 ```
 module.exports will export the shifterConfig object -- along with all the variables contained in it -- to whatever should require config.js.
+
+Now we'll move on to main.js in the parent directory. It  includes the functions for all shifting scenarios and the basic logic controlling them.
+
+```javascript
+const InterfaceKit = require('phidgetapi').InterfaceKit;
+const config = require('./configs/config.js');
+```
+
+The program begins by importing a library that allows node to  communicate with the Phidgets boards. Next, config.js is imported as well. Both of these are assigned to variables.
+
+```javascript
+let shifting = false;
+const IK888 = new InterfaceKit;
+const relays = new InterfaceKit;
+```
+
+Here the shifting variable is set to be false and variables are created for both the I/O and relay Phidgets boards.
