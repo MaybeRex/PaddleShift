@@ -198,10 +198,20 @@ void startPaddleShift(){
         return;
     }
 
+    CPhidgetInterfaceKit_setOutputState(ik888, 2, PTRUE);
+
     printf("Press any key to end\n");
     getchar();
 
+    for (int i = 0; i < 8; i++) {
+        CPhidgetInterfaceKit_setOutputState(ik888, i, PFALSE);
+    }
+    for (int i = 0; i < 4; i++) {
+        CPhidgetInterfaceKit_setOutputState(relays, i, PFALSE);
+    }
+
     printf("Closing...\n");
+
     CPhidget_close((CPhidgetHandle)ik888);
     CPhidget_delete((CPhidgetHandle)ik888);
 
