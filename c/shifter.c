@@ -2,8 +2,12 @@
 //Mario Solorzano
 
 #include <stdio.h>
-#include <phidget21.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+#include <phidget21.h>
 
 static int const milliseconds = 70;
 int shifting = 0;
@@ -11,19 +15,16 @@ int shifting = 0;
 int attatchHandler(CPhidgetHandle phid, void * userPtr){
     char * name;
     CPhidget_getDeviceName(phid, &name);
-    printf("Attached this! --> %s\n", name);
     return 0;
 }
 
 int detachHandler(CPhidgetHandle phid, void * userPtr){
     char * name;
     CPhidget_getDeviceName(phid, &name);
-    printf("Detached this! --> %s\n", name);
     return 0;
 }
 
 int errorHandler(CPhidgetHandle phid, void * userPtr, int errCode, const char * unk){
-    printf("Error!. %d - %s\n", errCode, unk);
     return 0;
 }
 
@@ -35,7 +36,6 @@ int inputHandler(CPhidgetInterfaceKitHandle ik888, CPhidgetInterfaceKitHandle re
     switch (index) {
         case 0:
             shifting = 1;
-            printf("Senses input number 1!\n");
             CPhidgetInterfaceKit_setOutputState(relays, 0, PTRUE);
             usleep(milliseconds * 1000);
             CPhidgetInterfaceKit_setOutputState(relays, 0, PFALSE);
@@ -44,7 +44,6 @@ int inputHandler(CPhidgetInterfaceKitHandle ik888, CPhidgetInterfaceKitHandle re
             break;
         case 1:
             shifting = 1;
-            printf("Senses input number 1!\n");
             CPhidgetInterfaceKit_setOutputState(relays, 1, PTRUE);
             usleep(milliseconds * 1000);
             CPhidgetInterfaceKit_setOutputState(relays, 2, PTRUE);
@@ -96,8 +95,6 @@ int relayOutputHandler(CPhidgetInterfaceKitHandle relays, void * userPtr, int in
 }
 
 void startPaddleShift(){
-
-    printf("Beginning Shift Sequence...\n");
 
     int ikResult;
     int relayResult;
@@ -172,13 +169,11 @@ void startPaddleShift(){
 
     //open the interface kit and the relay board
     //Interface Kit
-    printf("Attatching IK888... (Dont forget sudo!)\n");
     CPhidget_open(
         (CPhidgetHandle)ik888,
         275950
     );
     //Relay Board
-    printf("Attatching Relays... (Dont forget sudo!)\n");
     CPhidget_open(
         (CPhidgetHandle)relays,
         261867
@@ -188,41 +183,61 @@ void startPaddleShift(){
 
     if((ikResult = CPhidget_waitForAttachment((CPhidgetHandle)ik888, 10000))){
         CPhidget_getErrorDescription(ikResult, &err);
-        printf("Problem waiting for attachment: %s\n", err);
         return;
     }
 
     if((ikResult = CPhidget_waitForAttachment((CPhidgetHandle)relays, 10000))){
         CPhidget_getErrorDescription(relayResult, &err);
-        printf("Problem waiting for attachment: %s\n", err);
         return;
     }
 
     CPhidgetInterfaceKit_setOutputState(ik888, 2, PTRUE);
 
-    printf("Press any key to end\n");
-    getchar();
-
-    for (int i = 0; i < 8; i++) {
-        CPhidgetInterfaceKit_setOutputState(ik888, i, PFALSE);
+    while (1){
+        //Dont block context switches, let the process sleep for some time
+        sleep(10);
     }
-    for (int i = 0; i < 4; i++) {
-        CPhidgetInterfaceKit_setOutputState(relays, i, PFALSE);
-    }
-
-    printf("Closing...\n");
-
-    CPhidget_close((CPhidgetHandle)ik888);
-    CPhidget_delete((CPhidgetHandle)ik888);
-
-    CPhidget_close((CPhidgetHandle)relays);
-    CPhidget_delete((CPhidgetHandle)relays);
 
     return;
 }
 
-int main(){
+int main(int argc, char* argv[]){
+    FILE * fp= NULL;
+    pid_t process_id = 0;
+    pid_t sid = 0;
+
+    // Create child process
+    process_id = fork();
+
+    //error checks
+    if (process_id < 0){
+        printf("fork failed!\n");
+        exit(1);
+    }
+    if (process_id > 0){
+        printf("process_id of child process %d \n", process_id);
+        exit(0);
+    }
+
+    //idk why ones needs this
+    umask(0);
+
+    //or this
+    sid = setsid();
+    if(sid < 0){
+        exit(1);
+    }
+
+    //move to where its safe
+    chdir("/");
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+
     startPaddleShift();
+
+    fclose(fp);
 
     return 0;
 }
